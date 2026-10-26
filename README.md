@@ -210,4 +210,4 @@ npm start
 
 **Document Version**: `v1.0.0-production`  
 **License**: MIT  
-**Authors**: NIDAR RescueSwarm Engineering Team
+**Authors**: RescueSwarm Engineering Team
