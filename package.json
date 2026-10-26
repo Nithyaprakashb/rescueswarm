@@ -1,14 +1,41 @@
 {
-  "name": "gcs-app",
+  "name": "nidar-rescueswarm-gcs",
   "version": "1.0.0",
   "description": "NIDAR RescueSwarm Ground Control Station - Autonomous Drone Swarm GCS",
   "main": "electron/main.js",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "package": "npm run build && electron-builder --dir",
+    "dist": "npm run build && electron-builder",
     "start": "concurrently \"vite\" \"wait-on http://localhost:5173 && electron .\"",
     "electron": "electron .",
     "preview": "vite preview"
+  },
+  "build": {
+    "appId": "com.nidar.rescueswarm.gcs",
+    "productName": "NIDAR RescueSwarm GCS",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "backend/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
   },
   "keywords": [
     "gcs",
@@ -26,7 +53,6 @@
     "@radix-ui/react-slot": "^1.5.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "electron": "^30.5.1",
     "lucide-react": "^1.61.0",
     "maplibre-gl": "^6.16.0",
     "react": "^18.3.1",
@@ -40,6 +66,8 @@
     "@vitejs/plugin-react": "^6.1.2",
     "autoprefixer": "^10.6.1",
     "concurrently": "^10.0.6",
+    "electron": "^30.5.1",
+    "electron-builder": "^26.18.0",
     "postcss": "^8.5.31",
     "tailwindcss": "^3.4.19",
     "typescript": "^7.0.2",
