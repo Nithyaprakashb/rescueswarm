@@ -1,4 +1,4 @@
-# NIDAR RescueSwarm Ground Control Station (GCS)
+# RescueSwarm Ground Control Station (GCS)
 ## Autonomous Swarm Mission Control System — Production Architecture & Engineering Report
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x%2F7.x-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
