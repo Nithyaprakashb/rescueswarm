@@ -11,7 +11,7 @@ function createWindow() {
     height: 1000,
     minWidth: 1280,
     minHeight: 800,
-    title: 'NIDAR RescueSwarm GCS v1.0',
+    title: 'Adrods_X RescueSwarm GCS v1.0',
     backgroundColor: '#F2F4F7',
     show: false,
     autoHideMenuBar: true,

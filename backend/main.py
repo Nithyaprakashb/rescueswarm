@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-NIDAR RescueSwarm GCS - Python Backend Daemon
+Adrods_X RescueSwarm GCS - Python Backend Daemon
 Handles MAVLink telemetry via RFD900x serial radio and communicates
 with the Electron frontend via JSON stdin/stdout IPC.
 """

@@ -1,7 +1,7 @@
 {
-  "name": "nidar-rescueswarm-gcs",
+  "name": "adrods-x-rescueswarm-gcs",
   "version": "1.0.0",
-  "description": "NIDAR RescueSwarm Ground Control Station - Autonomous Drone Swarm GCS",
+  "description": "Adrods_X RescueSwarm Ground Control Station - Autonomous Drone Swarm GCS",
   "main": "electron/main.js",
   "scripts": {
     "dev": "vite",
@@ -13,8 +13,8 @@
     "preview": "vite preview"
   },
   "build": {
-    "appId": "com.nidar.rescueswarm.gcs",
-    "productName": "NIDAR RescueSwarm GCS",
+    "appId": "com.adrodsx.rescueswarm.gcs",
+    "productName": "Adrods_X RescueSwarm GCS",
     "directories": {
       "output": "release"
     },
@@ -41,9 +41,10 @@
     "gcs",
     "drone",
     "mavlink",
-    "nidar"
+    "adrods_x",
+    "rescueswarm"
   ],
-  "author": "NIDAR RescueSwarm Team",
+  "author": "Team Adrods_X",
   "license": "MIT",
   "type": "commonjs",
   "dependencies": {

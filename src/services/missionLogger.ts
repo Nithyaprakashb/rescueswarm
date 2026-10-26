@@ -1,5 +1,5 @@
 /**
- * NIDAR RescueSwarm GCS - Mission Logger Service
+ * Adrods_X RescueSwarm GCS - Mission Logger Service
  * 
  * Handles logging of mission events, survivor detections,
  * and telemetry data to local CSV/JSON files.

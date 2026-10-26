@@ -1,5 +1,5 @@
 // ============================================
-// NIDAR RescueSwarm GCS - Type Definitions
+// Adrods_X RescueSwarm GCS - Type Definitions
 // ============================================
 
 // ---- Drone Types ----

@@ -1,4 +1,4 @@
-# NIDAR RescueSwarm Ground Control Station (GCS)
+# Adrods_X RescueSwarm Ground Control Station (GCS)
 ## Autonomous Swarm Mission Control System — Production Architecture & Engineering Report
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x%2F7.x-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
@@ -12,12 +12,12 @@
 
 ## 1. Executive Summary & Purpose
 
-The **NIDAR RescueSwarm Ground Control Station (GCS)** is an offline, air-gapped mission command platform designed for single-operator oversight of a 3-drone autonomous search-and-rescue fleet:
+The **Adrods_X RescueSwarm Ground Control Station (GCS)** is an offline, air-gapped mission command platform designed for single-operator oversight of a 3-drone autonomous search-and-rescue fleet:
 - **`INS-01` (Quadcopter)**: High-altitude area inspection, lawnmower boustrophedon search path, onboard AI victim detection via YOLOv8n.
 - **`DEL-01` (Hexacopter)**: Precision delivery of 200g emergency survival kits into designated target zones.
 - **`DEL-02` (Hexacopter)**: Secondary delivery unit for rapid parallel payload deployment.
 
-Engineered specifically for **Track 1 (Drone Innovation - Problem Statement 1)** of the NIDAR Competition, the platform provides zero-touch autonomous monitoring, real-time telemetry processing at 20Hz, single-click survivor verification, and safety-interlocked emergency return-to-launch (RTO) controls.
+Engineered specifically for **Track 1 (Drone Innovation - Problem Statement 1)** of the Autonomous Drone Competition, the platform provides zero-touch autonomous monitoring, real-time telemetry processing at 20Hz, single-click survivor verification, and safety-interlocked emergency return-to-launch (RTO) controls.
 
 ---
 
@@ -210,4 +210,5 @@ npm start
 
 **Document Version**: `v1.0.0-production`  
 **License**: MIT  
-**Authors**: NIDAR RescueSwarm Engineering Team
+**Authors**: Adrods_X RescueSwarm Engineering Team
+

@@ -1,5 +1,5 @@
 /**
- * NIDAR RescueSwarm GCS - Telemetry Simulation Service
+ * Adrods_X RescueSwarm GCS - Telemetry Simulation Service
  * 
  * Provides simulated telemetry data for development and testing.
  * Mimics real drone behavior: flying patterns, battery drain,

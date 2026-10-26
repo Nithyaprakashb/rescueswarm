@@ -1,5 +1,5 @@
 /**
- * NIDAR RescueSwarm GCS - Keyboard Shortcuts Hook
+ * Adrods_X RescueSwarm GCS - Keyboard Shortcuts Hook
  * 
  * Implements the keyboard shortcuts defined in WORKFLOW.md:
  * - Ctrl+R: Refresh map tiles

@@ -21,7 +21,7 @@ export function PreFlightChecklist() {
     if (file) {
       importKml(file.name);
     } else {
-      importKml('NIDAR_10HA_ZONE.kml');
+      importKml('ADRODS_X_10HA_ZONE.kml');
     }
   };
 

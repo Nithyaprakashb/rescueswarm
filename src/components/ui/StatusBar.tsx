@@ -18,7 +18,7 @@ export function StatusBar() {
     <div className="h-11 bg-white/80 ios-blur border-b border-gcs-border flex items-center justify-between px-5 shrink-0">
       <div className="flex items-center gap-3">
         <div className="w-7 h-7 rounded-lg bg-gcs-cyan flex items-center justify-center"><Shield className="w-4 h-4 text-white" /></div>
-        <span className="font-semibold text-gcs-text text-[13px] tracking-tight">NIDAR RescueSwarm</span>
+        <span className="font-semibold text-gcs-text text-[13px] tracking-tight">Adrods_X RescueSwarm</span>
         <span className="text-gcs-subtle text-[11px]">GCS v1.0</span>
       </div>
       <div className="flex items-center">
