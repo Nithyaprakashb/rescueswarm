@@ -2,7 +2,7 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const { spawn } = require('child_process');
 
-let mainWindow;
+let mainWindow = null;
 let pythonProcess = null;
 
 function createWindow() {
@@ -13,7 +13,7 @@ function createWindow() {
     minHeight: 800,
     title: 'Adrods_X RescueSwarm GCS v1.0',
     backgroundColor: '#F2F4F7',
-    show: false,
+    show: true,
     autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -23,63 +23,69 @@ function createWindow() {
     },
   });
 
-  mainWindow.once('ready-to-show', () => {
-    mainWindow.show();
+  // In packaged app, __dirname is inside app.asar/electron
+  // So index.html is at app.asar/dist/index.html
+  const indexPath = path.join(__dirname, '../dist/index.html');
+  mainWindow.loadFile(indexPath).catch((err) => {
+    console.error('Failed to load local index.html:', err);
   });
-
-  const isDev = process.env.NODE_ENV === 'development' || !app.isPackaged;
-
-  if (isDev && process.env.ELECTRON_START_URL) {
-    mainWindow.loadURL(process.env.ELECTRON_START_URL);
-  } else {
-    mainWindow.loadFile(path.join(__dirname, '../dist/index.html'));
-  }
 
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
 }
 
-// Python backend daemon management
+// Python backend daemon management with graceful fallback
 function startPythonBackend() {
   const pythonPath = process.platform === 'win32' ? 'python' : 'python3';
   const scriptPath = path.join(__dirname, '../backend/main.py');
   
-  pythonProcess = spawn(pythonPath, [scriptPath], {
-    stdio: ['pipe', 'pipe', 'pipe'],
-  });
+  try {
+    pythonProcess = spawn(pythonPath, [scriptPath], {
+      stdio: ['pipe', 'pipe', 'pipe'],
+    });
 
-  pythonProcess.stdout.on('data', (data) => {
-    try {
-      const lines = data.toString().split('\n').filter(l => l.trim());
-      for (const line of lines) {
-        const message = JSON.parse(line);
-        if (message.type === 'telemetry' && mainWindow) {
-          mainWindow.webContents.send('telemetry-update', message.data);
-        } else if (message.type === 'status' && mainWindow) {
-          mainWindow.webContents.send('serial-status', message.data);
-        } else if (message.type === 'survivor-detected' && mainWindow) {
-          mainWindow.webContents.send('survivor-detected', message.data);
+    pythonProcess.on('error', (err) => {
+      console.log('[Python notice]: Python daemon unavailable, frontend fallback active:', err.message);
+    });
+
+    pythonProcess.stdout.on('data', (data) => {
+      try {
+        const lines = data.toString().split('\n').filter(l => l.trim());
+        for (const line of lines) {
+          const message = JSON.parse(line);
+          if (message.type === 'telemetry' && mainWindow) {
+            mainWindow.webContents.send('telemetry-update', message.data);
+          } else if (message.type === 'status' && mainWindow) {
+            mainWindow.webContents.send('serial-status', message.data);
+          } else if (message.type === 'survivor-detected' && mainWindow) {
+            mainWindow.webContents.send('survivor-detected', message.data);
+          }
         }
+      } catch {
+        // Raw stdout
       }
-    } catch (e) {
-      console.log('[Python stdout]:', data.toString());
-    }
-  });
+    });
 
-  pythonProcess.stderr.on('data', (data) => {
-    console.error('[Python stderr]:', data.toString());
-  });
+    pythonProcess.stderr.on('data', (data) => {
+      console.log('[Python stderr]:', data.toString());
+    });
 
-  pythonProcess.on('close', (code) => {
-    console.log(`Python backend exited with code ${code}`);
-    setTimeout(startPythonBackend, 2000);
-  });
+    pythonProcess.on('close', (code) => {
+      console.log(`Python backend exited with code ${code}`);
+    });
+  } catch (err) {
+    console.log('[Python notice]: Failed to spawn python:', err.message);
+  }
 }
 
 function sendToPython(command) {
-  if (pythonProcess && pythonProcess.stdin.writable) {
-    pythonProcess.stdin.write(JSON.stringify(command) + '\n');
+  if (pythonProcess && pythonProcess.stdin && pythonProcess.stdin.writable) {
+    try {
+      pythonProcess.stdin.write(JSON.stringify(command) + '\n');
+    } catch {
+      // Ignore write errors
+    }
   }
 }
 
@@ -130,7 +136,11 @@ app.whenReady().then(() => {
 
 app.on('window-all-closed', () => {
   if (pythonProcess) {
-    pythonProcess.kill();
+    try {
+      pythonProcess.kill();
+    } catch {
+      // Ignore
+    }
   }
   if (process.platform !== 'darwin') app.quit();
 });
