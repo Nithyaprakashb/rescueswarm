@@ -20,11 +20,11 @@ This document specifies the end-to-end communication and video architecture for 
 +===================================================================================================+
 |                                    ONBOARD DRONE SUITE (INS-01)                                   |
 |                                                                                                   |
-|  [IMX219-83 Stereo Cam] ---MIPI CSI-2---> [Raspberry Pi 5 + Hailo-8 NPU]                          |
+|  [RPi Cam Module 3 Wide 12MP] -MIPI CSI-2-> [Raspberry Pi 5 + Hailo-8 NPU]                          |
 |                                                    |                                              |
 |                                                    | (Micro-HDMI Output w/ YOLOv8 Bounding Boxes) |
 |                                                    v                                              |
-|  [Holybro Pixhawk 6X]                     [HDMI to AV Scaler Converter]                           |
+|  [CubePilot Cube Orange+]                     [HDMI to AV Scaler Converter]                           |
 |         |                                          |                                              |
 |         | (MAVLink 2.0 @ 57,600 baud)              | (Analog CVBS Video Signal)                   |
 |         v                                          v                                              |
@@ -81,7 +81,7 @@ Each packet is packed in Little-Endian byte order:
 | **COMP_FLAGS** | 1 Byte | Bitmask | Optional flags that can be safely ignored by older parsers. |
 | **SEQ** | 1 Byte | $0 - 255$ | Sequence counter incremented per message; GCS uses this to compute radio packet loss rate. |
 | **SYSID** | 1 Byte | $1, 2, 3$ | **Multi-Vehicle Fleet Identifier:**<br>• `SYSID = 1`: `INS-01` (Inspection Quadcopter)<br>• `SYSID = 2`: `DEL-01` (Delivery Hexacopter #1)<br>• `SYSID = 3`: `DEL-02` (Delivery Hexacopter #2)<br>• `SYSID = 255`: Ground Control Station (GCS) |
-| **COMPID** | 1 Byte | $1 \text{ or } 190$ | Component ID (`1` = Pixhawk Autopilot, `190` = Raspberry Pi Companion). |
+| **COMPID** | 1 Byte | $1 \text{ or } 190$ | Component ID (`1` = Cube Orange+ Autopilot, `190` = Raspberry Pi Companion). |
 | **MSG_ID** | 3 Bytes | 24-bit integer | Specifies the exact telemetry structure of the payload (see Section 3.3). |
 | **PAYLOAD** | $0 - 255$ Bytes | Packed struct | Serialized integers, floating-point numbers, and bitfields. |
 | **CHECKSUM** | 2 Bytes | CRC-16-CCITT | Cyclic Redundancy Check protecting the packet against transmission corruption. |
@@ -98,7 +98,7 @@ Each packet is packed in Little-Endian byte order:
 | **#183** | `DO_SET_SERVO` | On-Demand | Channel index and PWM pulse width ($1000\mu s - 2000\mu s$) triggering the medical kit release gate. |
 
 ### 3.4 Telemetry Transport & Hardware Layer
-* **Onboard Wiring:** Pixhawk 6X `TELEM1` $\longrightarrow$ RFD868x Air Radio (configured with **Split-Rail wiring**: 5V power from external BEC to bypass Pixhawk's 500mA port limiter).
+* **Onboard Wiring:** Cube Orange+ `TELEM1` $\longrightarrow$ RFD868x Air Radio (configured with **Split-Rail wiring**: 5V power from external BEC to isolate 1W RF current transients from FC bus).
 * **Wireless Band:** **865–867 MHz** (WPC GSR 564(E) license-free in India).
 * **Ground Interface:** Ground RFD868x connects to the laptop via an **FTDI USB-to-UART cable** (`COM3` / `COM4`), powered directly via laptop USB (5V DC).
 * **GCS Parsing:** A local Node.js / Python daemon reads raw binary bytes, parses MAVLink structs using `node-mavlink` / `pymavlink`, and broadcasts clean JSON events to the React UI via a local WebSocket (`ws://localhost:8080`).
@@ -108,7 +108,7 @@ Each packet is packed in Little-Endian byte order:
 ## 4. Real-Time Video Capture, Encoding, Transmission & Playback
 
 ```
-[Sony IMX219-83 Stereo Sensor]
+[Sony IMX708 12MP Wide Sensor]
              |
              | 2-Lane MIPI CSI-2 (RAW10)
              v
@@ -147,11 +147,11 @@ Each packet is packed in Little-Endian byte order:
 ```
 
 ### 4.1 Onboard Video Capture & AI Graphic Rendering
-1. **Camera Sensor:** The **IMX219-83 Stereo Camera Module** captures raw optical frames through dual 2-lane MIPI CSI-2 interfaces into the Raspberry Pi 5.
+1. **Camera Sensor:** The **Raspberry Pi Camera Module 3 Wide** (12MP Sony IMX708) captures raw optical frames through a high-bandwidth 2-lane MIPI CSI-2 interface into the Raspberry Pi 5.
 2. **AI Inference & HUD Overlay:**
    * Raw frames (`RAW10`) are debayered to `YUV420p` / `NV12` by the Pi 5 ISP.
    * The **Hailo-8 NPU (26 TOPS)** processes YOLOv8n object detection at $>30\text{ FPS}$.
-   * OpenCV paints real-time green bounding boxes, confidence scores, and stereo 3D ground coordinates directly onto the frame buffer.
+   * OpenCV paints real-time green bounding boxes, confidence scores, and monocular ray-cast ground coordinates directly onto the frame buffer.
 3. **Digital-to-Analog Video Conversion:**
    * The composite video output leaves the Raspberry Pi 5 through its **Micro-HDMI port**.
    * It enters the **HDMI to AV Scaler Converter Board** (bare PCB: $12\text{ grams}$), which downscales the signal to standard composite video (CVBS PAL/NTSC, $1\text{V}_{p-p}, 75\Omega$).

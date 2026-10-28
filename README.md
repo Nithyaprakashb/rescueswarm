@@ -46,15 +46,15 @@ flowchart TD
     end
 
     subgraph Core ["Telemetry Engine (Python 3)"]
-        SM[serial_manager.py - RFD900x USB Link]
+        SM[serial_manager.py - RFD868x USB Link]
         MH[mav_handler.py - PyMAVLink Parser]
         TA[task_allocator.py - Distance Dispatch]
     end
 
-    subgraph Swarm ["Hardware (915MHz Radio)"]
-        INS[INS-01 Quadcopter]
-        DEL1[DEL-01 Hexacopter]
-        DEL2[DEL-02 Hexacopter]
+    subgraph Swarm ["Hardware (915MHz / 868MHz Mesh Radio)"]
+        INS1[INS-01 Search Quadcopter]
+        DEL1[DEL-01 Delivery Hexacopter]
+        DEL2[DEL-02 Delivery Hexacopter]
     end
 
     UI <--> State
@@ -62,7 +62,7 @@ flowchart TD
     P <--> M
     M <--> SM
     SM <--> MH <--> TA
-    SM <===>|MAVLink 2 over 915MHz| Swarm
+    SM <===>|MAVLink 2 over 868MHz| Swarm
 ```
 
 ---
